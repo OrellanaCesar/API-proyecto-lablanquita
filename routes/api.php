@@ -15,5 +15,17 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+	return $request->user();
+});
+
+
+Route::group(['prefix' => 'brands'], function () {
+	Route::get('', 'App\Http\Controllers\BrandController@index');
+	Route::post('dataTable', 'App\Http\Controllers\BrandController@dataTableBrands');
+	Route::post('create', 'App\Http\Controllers\BrandController@store');
+	Route::post('update/{id}', 'App\Http\Controllers\BrandController@update');
+	Route::delete('delete/{id}','App\Http\Controllers\BrandController@destroy');
+	Route::group(['middleware' => 'auth:api'], function () {
+
+	});
 });
