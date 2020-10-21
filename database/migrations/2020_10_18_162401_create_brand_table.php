@@ -14,11 +14,10 @@ class CreateBrandTable extends Migration
     public function up()
     {
         Schema::create('brands', function (Blueprint $table) {
-            $table->id('brandid');
-            $table->string('brandname');
-            $table->timestamp('brandcreatedate')->nullable();
-            $table->timestamp('brandchangedate')->nullable();
-            $table->timestamp('brandlowdate')->nullable();
+            $table->id('brand_id');
+            $table->string('brand_name');
+            $table->timestamp('brand_create_date')->nullable();
+            $table->timestamp('brand_change_date')->nullable();
         });
     }
 

@@ -14,11 +14,10 @@ class CreateCategoryTable extends Migration
     public function up()
     {
         Schema::create('categories', function (Blueprint $table) {
-            $table->id('categoryid');
-            $table->string('categoryname');
-            $table->timestamp('categorycreatedate')->nullable();
-            $table->timestamp('categorychangedate')->nullable();
-            $table->timestamp('categorylowdate')->nullable();
+            $table->id('category_id');
+            $table->string('category_name');
+            $table->timestamp('category_create_date')->nullable();
+            $table->timestamp('category_change_date')->nullable();
         });
     }
 
