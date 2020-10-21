@@ -14,22 +14,23 @@ class CreateProductTable extends Migration
     public function up()
     {
         Schema::create('products', function (Blueprint $table) {
-            $table->id('productid');
-            $table->unsignedBigInteger('brandid');
-            $table->unsignedBigInteger('categoryid');
-            $table->string('productname');
-            $table->string('productdescripcion');
-            $table->string('productimage');
+            $table->id('product_id');
+            $table->unsignedBigInteger('brand_id');
+            $table->unsignedBigInteger('category_id');
+            $table->string('product_name');
+            $table->string('product_description');
+            $table->string('product_image');
             $table->double('productprice',10,2);
-            $table->timestamp('productcreatedate')->nullable();
-            $table->timestamp('productchangedate')->nullable();
-            $table->timestamp('productlowdate')->nullable();
-            $table->boolean('productofferday');
-            $table->boolean('productbestseller');
-            $table->integer('productdiscountpercentage');
-            $table->boolean('productstock');
-            $table->foreign('brandid')->references('brandid')->on('brands');
-            $table->foreign('categoryid')->references('categoryid')->on('categories');
+            $table->timestamp('product_create_date')->nullable();
+            $table->timestamp('product_change_date')->nullable();
+            $table->boolean('product_offer_day');
+            $table->integer('product_offer_day_order');
+            $table->boolean('product_best_seller');
+            $table->integer('product_best_seller_order');
+            $table->integer('product_discount_percentage');
+            $table->boolean('product_stock');
+            $table->foreign('brand_id')->references('brand_id')->on('brands');
+            $table->foreign('category_id')->references('category_id')->on('categories');
         });
     }
 

@@ -13,11 +13,11 @@ class Brand extends Model
    *
    * @var array
    */
-   public $timestamps = false;
-   protected $primaryKey = 'brandid';
-   protected $fillable = [
-     'brandname'
-   ];
+  public $timestamps = false;
+  protected $primaryKey = 'brand_id';
+  protected $fillable = [
+   'brand_name'
+ ];
 
    /**
     * The attributes that should be hidden for arrays.
@@ -27,11 +27,11 @@ class Brand extends Model
 
 
    protected $hidden = [
-       'brandcreatedate','brandchangedate'
+     'brand_create_date','brand_change_date'
    ];
 
    public function products(){
-       return $this->hasMany(Product::class);
+     return $this->hasMany(Product::class);
    }
     //use HasFactory;
-}
+ }

@@ -13,13 +13,12 @@ class CreateProfileTable extends Migration
      */
     public function up()
     {
-        Schema::create('profiles', function (Blueprint $table) {
-            $table->id('profileid');
-            $table->string('profilename');
-            $table->timestamp('profilecreatedate')->nullable();
-            $table->timestamp('profilechangedate')->nullable();
-            $table->timestamp('profilelowdate')->nullable();
-        });
+    	Schema::create('profiles', function (Blueprint $table) {
+    		$table->id('profile_id');
+    		$table->string('profile_name');
+    		$table->timestamp('profile_create_date')->nullable();
+    		$table->timestamp('profile_change_date')->nullable();
+    	});
     }
 
     /**
@@ -29,6 +28,6 @@ class CreateProfileTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('profile');
+    	Schema::dropIfExists('profile');
     }
 }
