@@ -14,7 +14,7 @@ class BrandController extends Controller
     Return :los datos de la marca en forma ordenada por nombre*/
     public function index()
     {
-        return response()->json(Brand::orderby('brandname')->get(), 200);
+        return response()->json(Brand::orderby('brand_name')->get(), 200);
     }
 
     /*Esta funcion devuelve un DataTable con todos los datos de marcas ordenados por el
@@ -23,7 +23,7 @@ class BrandController extends Controller
     Parametros : no se le pasa ningun parametro
     Return : una tabla con los atributos de las marcas ordenadas por nombres */
     public function dataTableBrands()
-    {   return DataTables::of(Brand::orderby('brandname')->get())
+    {   return DataTables::of(Brand::orderby('brand_name')->get())
     ->addColumn('accion', function($b){
       return '';
   })->make(true);
@@ -36,11 +36,11 @@ Return:la funcion devuelve si se pudo guardar correctamente o no */
 public function store(Request $request)
 {
     $validaData = $request->validate([
-        'brandname' => ['required','string']
+        'brand_name' => ['required','string']
     ]
 );
     $brand = new Brand();
-    $brand->brandname = strtoupper($request->brandname);
+    $brand->brandname = strtoupper($request->brand_name);
 
     if ($brand->save()){
         return response()->json([
@@ -87,7 +87,7 @@ public function update(Request $request, $id)
 {
     $brand = Brand::find($id);
     $validaData = $request->validate([
-        'brandname' => ['required','string']
+        'brand_name' => ['required','string']
     ]
 );
 
@@ -98,7 +98,7 @@ public function update(Request $request, $id)
         ], 400);
     }
     $data = array(
-        'brandname' => $request->brandname,
+        'brand_name' => $request->brandname,
     );
 
     $updated = $brand->update($data);
