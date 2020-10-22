@@ -20,7 +20,7 @@ class CreateProductTable extends Migration
             $table->string('product_name');
             $table->string('product_description');
             $table->string('product_image');
-            $table->double('productprice',10,2);
+            $table->double('product_price',10,2);
             $table->timestamp('product_create_date')->nullable();
             $table->timestamp('product_change_date')->nullable();
             $table->boolean('product_offer_day');
@@ -41,6 +41,6 @@ class CreateProductTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('product');
+        Schema::dropIfExists('products');
     }
 }
