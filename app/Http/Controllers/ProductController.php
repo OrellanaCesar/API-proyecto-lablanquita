@@ -14,12 +14,23 @@ class ProductController extends Controller
      */
     public function index()
     {
+        /*Esta funcion devuelve todos los productos  y sus marcas y categorias
+        correspondiente  
+        Parameters: no recibe
+        return: json con los datos del producto*/
+
         $products = Product::with('categories:category_id,category_name','Brands:brand_id,brand_name')
                     ->get();
         return response()->json($products, 200);
     }
 
     public function offerDay(){
+
+        /*Esta funcion devuelve todos los productos que son ofertas del dia 
+        y sus marcas y categorias correspondiente  
+        Parameters: no recibe
+        return: json con los datos del producto*/
+
         $products = Product::where('product_offer_day','=',true)
                     ->with('categories:category_id,category_name','brands:brand_id,brand_name')
                     ->orderby('product_offer_day_order','asc')
@@ -28,6 +39,12 @@ class ProductController extends Controller
     }
 
     public function bestSeller(){
+        
+        /*Esta funcion devuelve todos los productos mas vendido  y sus marcas y categorias
+        correspondiente  
+        Parameters: no recibe
+        return: json con los datos del producto*/
+
         $products = Product::where('product_best_seller','=',true)
                     ->with('categories:category_id,category_name','brands:brand_id,brand_name')
                     ->orderby('product_best_seller_order','asc')
