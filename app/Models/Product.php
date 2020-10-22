@@ -30,8 +30,8 @@ class Product extends Model
         'product_best_seller',
         'product_best_seller_order',
         'product_discount_percentage',
-        'brand_id',
-        'category_id'    
+        'category_id',
+        'brand_id'  
     ];
 
     /**
@@ -48,15 +48,13 @@ class Product extends Model
      *
      * @var array
      */
-    // protected $casts = [
-    //     'email_verified_at' => 'datetime',
-    // ];
+    
 
     public function categories(){
-        return $this->belongsTo('App\Models\Category');
+        return $this->belongsTo('App\Models\Category','category_id');
     }
 
-    public function Brands(){
-        return $this->belongsTo('App\Models\Brand');
+    public function brands(){
+        return $this->belongsTo('App\Models\Brand','brand_id');
     }
 }
