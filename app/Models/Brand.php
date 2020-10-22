@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Product;
 
 class Brand extends Model
 {
@@ -13,7 +12,10 @@ class Brand extends Model
    *
    * @var array
    */
-  public $timestamps = false;
+  
+  const CREATED_AT = 'brand_create_date';
+  const UPDATED_AT = 'brand_change_date'; 
+  
   protected $primaryKey = 'brand_id';
   protected $fillable = [
    'brand_name'
@@ -31,7 +33,7 @@ class Brand extends Model
    ];
 
    public function products(){
-     return $this->hasMany(Product::class);
+     return $this->hasMany('App\Models\Product');
    }
     //use HasFactory;
  }
