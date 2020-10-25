@@ -23,6 +23,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::group(['prefix' => 'brands'], function () {
 	Route::get('', [BrandController::class, 'index']);
+	Route::get('/{id}', [BrandController::class,'getBrand']);
 	Route::post('dataTable',[BrandController::class, 'dataTableBrands']);
 	Route::post('create', [BrandController::class, 'store']);
 	Route::post('update/{id}', [BrandController::class, 'update']);

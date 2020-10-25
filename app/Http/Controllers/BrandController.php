@@ -40,7 +40,7 @@ public function store(Request $request)
     ]
 );
     $brand = new Brand();
-    $brand->brandname = strtoupper($request->brand_name);
+    $brand->brand_name = strtoupper($request->brand_name);
 
     if ($brand->save()){
         return response()->json([
@@ -98,7 +98,7 @@ public function update(Request $request, $id)
         ], 400);
     }
     $data = array(
-        'brand_name' => $request->brandname,
+        'brand_name' => $request->brand_name,
     );
 
     $updated = $brand->update($data);
@@ -113,6 +113,14 @@ public function update(Request $request, $id)
             'success' => false,
             'message' => 'La marca no se pudo actualizar'
         ], 500);
+}
+
+public function getBrand($id)
+{
+    $b = Brand::select('brands.brand_name')
+    ->where('brands.brand_id','=',$id)
+    ->get();
+    return response()->json($b, 200);
 }
 
 }
