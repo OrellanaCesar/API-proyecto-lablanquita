@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\BrandController;
+use App\Http\Controllers\CategoriesController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -37,4 +38,12 @@ Route::group(['prefix' => 'products'], function () {
 	Route::get('', [ProductController::class, 'index']);
 	Route::get('offerDay', [ProductController::class, 'offerDay']);
 	Route::get('bestSeller', [ProductController::class, 'bestSeller']);
+});
+
+Route::group(['prefix' => 'categories'], function () {
+	Route::get('', [CategoriesController::class, 'index']);
+	Route::post('dataTable',[CategoriesController::class, 'dataTableCategories']);
+	Route::post('create', [CategoriesController::class, 'store']);
+	Route::post('update/{id}', [CategoriesController::class, 'update']);
+	Route::delete('delete/{id}',[CategoriesController::class, 'destroy']);
 });
