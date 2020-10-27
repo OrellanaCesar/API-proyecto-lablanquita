@@ -17,7 +17,7 @@ class Category extends Model
     ];
 
     protected $hidden = [
-        'create_create_date','change_change_date'
+        'category_create_date','category_change_date'
      ];
 
     public function products(){

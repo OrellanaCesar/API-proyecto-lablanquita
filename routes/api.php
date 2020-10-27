@@ -37,6 +37,8 @@ Route::group(['prefix' => 'products'], function () {
 	Route::get('', [ProductController::class, 'index']);
 	Route::get('offerDay', [ProductController::class, 'offerDay']);
 	Route::get('bestSeller', [ProductController::class, 'bestSeller']);
+	Route::post('dataTable',[ProductController::class, 'dataTableProducts'] );
+	Route::post('create', [ProductController::class, 'store']);
 });
 
 Route::group(['prefix' => 'categories'], function () {
