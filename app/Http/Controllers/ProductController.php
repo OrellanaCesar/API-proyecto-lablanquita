@@ -23,7 +23,7 @@ class ProductController extends Controller
         return: json con los datos del producto*/
 
         $products = Product::with('category:category_id,category_name','brand:brand_id,brand_name')
-                    ->get();
+        ->get();
         return response()->json($products, 200);
     }
 
@@ -35,23 +35,23 @@ class ProductController extends Controller
         return: json con los datos del producto*/
 
         $products = Product::where('product_offer_day','=',true)
-                    ->with('category:category_id,category_name','brand:brand_id,brand_name')
-                    ->orderby('product_offer_day_order','asc')
-                    ->get();
+        ->with('category:category_id,category_name','brand:brand_id,brand_name')
+        ->orderby('product_offer_day_order','asc')
+        ->get();
         return response()->json($products, 200);
     }
 
     public function bestSeller(){
-        
+
         /*Esta funcion devuelve todos los productos mas vendido  y sus marcas y categorias
         correspondiente  
         Parameters: no recibe
         return: json con los datos del producto*/
 
         $products = Product::where('product_best_seller','=',true)
-                    ->with('category:category_id,category_name','brand:brand_id,brand_name')
-                    ->orderby('product_best_seller_order','asc')
-                    ->get();
+        ->with('category:category_id,category_name','brand:brand_id,brand_name')
+        ->orderby('product_best_seller_order','asc')
+        ->get();
         return response()->json($products, 200);
     }
 
@@ -65,11 +65,11 @@ class ProductController extends Controller
 
         
         return DataTables::of(Product::with('category:category_id,category_name','brand:brand_id,brand_name')
-                            ->orderby('product_name')                
-                            ->get())
-                            ->addColumn('accion', function($b){
-                                return '';
-                            })->make(true);
+            ->orderby('product_name')                
+            ->get())
+        ->addColumn('accion', function($b){
+            return '';
+        })->make(true);
     }
 
     /**
@@ -88,8 +88,8 @@ class ProductController extends Controller
         */
 
         $p = Product::selectRaw('count(*) as cantidad')
-                    ->where('product_offer_day','=',true)
-                    ->first();
+        ->where('product_offer_day','=',true)
+        ->first();
         return $p->cantidad;
     }
 
@@ -101,13 +101,13 @@ class ProductController extends Controller
         return: un numero entero que representa la cantidad
         */
         $p = Product::selectRaw('count(*) as cantidad')
-                        ->where('product_best_seller','=',true)
-                        ->first();
+        ->where('product_best_seller','=',true)
+        ->first();
         return $p->cantidad;
     }
 
     public function idOffer($orden){
-        
+
         /* Esta funcion devuelde el id del producto que es oferta del dia
         y tiene el orden pasado por paramtro
         parameter: entero que representara la posicion del carousel.
@@ -116,9 +116,9 @@ class ProductController extends Controller
         */
 
         $p = Product::select('product_id')
-                        ->where('product_offer_day','=',true)
-                        ->where('product_offer_day_order' ,'=', $orden)
-                        ->first();
+        ->where('product_offer_day','=',true)
+        ->where('product_offer_day_order' ,'=', $orden)
+        ->first();
         if ($p !== null){
             return $p->product_id;
         }else{
@@ -137,9 +137,9 @@ class ProductController extends Controller
         */
 
         $p = Product::select('product_id')
-                        ->where('product_best_seller','=',true)
-                        ->where('product_best_seller_order' ,'=', $orden)
-                        ->first();
+        ->where('product_best_seller','=',true)
+        ->where('product_best_seller_order' ,'=', $orden)
+        ->first();
         if ($p !== null){
             return $p->product_id;
         }else{
@@ -180,10 +180,10 @@ class ProductController extends Controller
         return: json con los orden de productos oferta del dia.*/
 
         $p = Product::select('products.product_offer_day_order')
-                ->where('products.product_offer_day','=',true)
-                ->where('products.product_offer_day_order', '>', 0)
-                ->orderby('products.product_offer_day_order', 'asc')
-                ->get();
+        ->where('products.product_offer_day','=',true)
+        ->where('products.product_offer_day_order', '>', 0)
+        ->orderby('products.product_offer_day_order', 'asc')
+        ->get();
         return response()->json($p, 200);
     }
 
@@ -195,10 +195,10 @@ class ProductController extends Controller
         return: json con los orden de productos destacados.*/
 
         $p = Product::select('products.product_best_seller_order')
-                ->where('products.product_best_seller','=',true)
-                ->where('products.product_best_seller_order', '>', 0)
-                ->orderby('products.product_best_seller_order', 'asc')
-                ->get();
+        ->where('products.product_best_seller','=',true)
+        ->where('products.product_best_seller_order', '>', 0)
+        ->orderby('products.product_best_seller_order', 'asc')
+        ->get();
         return response()->json($p, 200);
     }
 
@@ -255,12 +255,25 @@ class ProductController extends Controller
         
     }
 
+    public function getProduct($id)
+    {
+        $p = Product::select('products.*','brands.brand_name','categories.category_name')
+        ->join('brands','products.brand_id', '=','brands.brand_id')
+        ->join('categories','products.category_id','=','categories.category_id')
+        ->where('products.product_id','=',$id)
+        ->get();
+        return response()->json($p, 200);
+    }
+
     /**
      * Display the specified resource.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
+
+
     public function show($id)
     {
         //
