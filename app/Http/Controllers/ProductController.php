@@ -80,20 +80,41 @@ class ProductController extends Controller
      */
 
     public function countOffer(){
-        $p = $p = Product::selectRaw('count(*) as cantidad')
+
+        /* Esta funcion devuelve la cantidad de productos 
+        que son ofertas del dia
+        parameter: no hay.
+        return: un numero entero que representa la cantidad
+        */
+
+        $p = Product::selectRaw('count(*) as cantidad')
                     ->where('product_offer_day','=',true)
                     ->first();
         return $p->cantidad;
     }
 
-    public function cantBest(){
-        $p = $p = Product::selectRaw('count(*) as cantidad')
+    public function countBest(){
+
+        /* Esta funcion devuelve la cantidad de productos 
+        que son ofertas destacados
+        parameter: no hay.
+        return: un numero entero que representa la cantidad
+        */
+        $p = Product::selectRaw('count(*) as cantidad')
                         ->where('product_best_seller','=',true)
                         ->first();
         return $p->cantidad;
     }
 
     public function idOffer($orden){
+        
+        /* Esta funcion devuelde el id del producto que es oferta del dia
+        y tiene el orden pasado por paramtro
+        parameter: entero que representara la posicion del carousel.
+        return: el id del producto con ese orden o si no lo encuentra devuelev
+        un -1
+        */
+
         $p = Product::select('product_id')
                         ->where('product_offer_day','=',true)
                         ->where('product_offer_day_order' ,'=', $orden)
@@ -107,6 +128,14 @@ class ProductController extends Controller
     }
 
     public function idBest($orden){
+
+        /* Esta funcion devuelde el id del producto que es destacado
+        y tiene el orden pasado por paramtro
+        parameter: entero que representara la posicion del carousel.
+        return: el id del producto con ese orden o si no lo encuentra devuelev
+        un -1
+        */
+
         $p = Product::select('product_id')
                         ->where('product_best_seller','=',true)
                         ->where('product_best_seller_order' ,'=', $orden)
@@ -119,21 +148,58 @@ class ProductController extends Controller
     }
 
     public function actulizaCarousel($orderO,$orderB,$valueO,$valueB){
+
+        /* Esta funcion pone en 0 tanto a prduct_offert_day_order como al product_best_seller_order 
+        en caso de que los valores(valueO,valueB) que representaran cantidad sean == 1 
+        prameter: orden de offer, orden de best , valor nuevo para orden, valor nuevo para best
+        return: no retorna nada.
+        */
+
         if ($valueO == 1){
-            $cant_o = $this->cantOffer();
+            $cant_o = $this->countOffer();
             $id_o = $this->idOffer($orderO);
             if (($cant_o > 0) && ($id_o > 0) ){
                 $p = Product::find($id_o)->update(['product_offer_day_order' => 0]);
             }
         }
         if ($valueB == 1 ){
-            $cant_b = $this->cantBest();
+            $cant_b = $this->countBest();
             $id_b = $this->idBest($orderB);
             if (($cant_b > 0 ) && ( $id_b > 0)){
                 $p = Product::find($id_b)->update(['product_best_seller_order' => 0]);
             }
         }    
 
+    }
+
+    public function ocupedOffer(){
+
+        /* Esta funcion devuelve todos los orden de los productos
+        que son ofertas del dia.
+        prameter:no hay.
+        return: json con los orden de productos oferta del dia.*/
+
+        $p = Product::select('products.product_offer_day_order')
+                ->where('products.product_offer_day','=',true)
+                ->where('products.product_offer_day_order', '>', 0)
+                ->orderby('products.product_offer_day_order', 'asc')
+                ->get();
+        return response()->json($p, 200);
+    }
+
+    public function ocupedBest(){
+
+        /* Esta funcion devuelve todos los orden de los productos
+        que son destacados.
+        prameter:no hay.
+        return: json con los orden de productos destacados.*/
+
+        $p = Product::select('products.product_best_seller_order')
+                ->where('products.product_best_seller','=',true)
+                ->where('products.product_best_seller_order', '>', 0)
+                ->orderby('products.product_best_seller_order', 'asc')
+                ->get();
+        return response()->json($p, 200);
     }
 
     public function store(Request $request)
@@ -146,9 +212,9 @@ class ProductController extends Controller
             'product_stock' => ['required'],
             'product_offer_day' => ['required'],
             'product_best_seller' => ['required'],
-            'pproduct_offer_day_order' => ['required'],
+            'product_offer_day_order' => ['required'],
             'product_best_seller_order' => ['required'],
-            'branf_id' => ['required'],
+            'brand_id' => ['required'],
             'category_id' => ['required'],
         ]);
         
@@ -161,7 +227,7 @@ class ProductController extends Controller
             $product->product_description = $request->product_description;
             $product->product_stock = $request->product_stock;
             $product->product_image = Storage::url($path);
-            $product->product_offer_day = $request-product_offer_day;
+            $product->product_offer_day = $request->product_offer_day;
             $product->product_offer_day_order = intVal($request->product_offer_day_order);
             $product->product_best_seller = $request->product_best_seller;
             $product->product_best_seller_order = intVal($request->product_best_seller_order);

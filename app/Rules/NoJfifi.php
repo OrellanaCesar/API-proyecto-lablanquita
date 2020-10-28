@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Rules\Rules;
+namespace App\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
 
@@ -25,6 +25,7 @@ class NoJfifi implements Rule
      */
     public function passes($attribute, $value)
     {
+        //
         return !(substr($value->getClientOriginalName(), -4 ) == 'jfif' );
     }
 
@@ -35,6 +36,6 @@ class NoJfifi implements Rule
      */
     public function message()
     {
-        return 'No se acepta imagenes con formato jfifi.';
+        return 'The validation error message.';
     }
 }
