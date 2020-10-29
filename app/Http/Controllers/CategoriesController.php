@@ -76,7 +76,8 @@ class CategoriesController extends Controller
      */
     public function show($id)
     {
-        //
+        $c = Category::find($id);
+        return response()->json($c, 200);
     }
 
     /**
@@ -93,13 +94,16 @@ class CategoriesController extends Controller
         Parámetros: recibe el parámetro 'id' de la Categoría a modificar y 'request' que tendrá los
         datos que se modificaron.
         Return: Devuelve un mensaje indicando que no existe la Categoría con ese 'id', o devuelve 
-        un mensaje indicando que si se pudo realizar la opreación de actualización */
+        un mensaje indicando que si se pudo realizar la opreación de actualización
+         */
 
         $category = Category::find($id);
         $validaData = $request->validate([
                             'category_name' => ['required','string']
                     ]);
-
+        
+        
+        
         if (!$category) {
             return response()->json([
                 'success' => false,
@@ -108,7 +112,7 @@ class CategoriesController extends Controller
         }
         
         $data = array(
-                'category_name' => $request->category_name,
+                'category_name' => strtoupper($request->category_name),
         );
 
         $updated = $category->update($data);
@@ -135,17 +139,26 @@ class CategoriesController extends Controller
         /*Esta función busca la Categoría con el id pasado por parámetro y lo elimina.
           Parámetros: recibe el parámetro id, que es el código de la categoría a eliminar  
           Return: devuelve un mensaje indicando si pudo eliminar la categoría o no */
-            
+          $product = Category::find($id)->products;
+
           $category = Category::find($id);
-            if ($category->delete()) {
-                return response()->json([
+
+          if (sizeof($product) > 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'La Categoría no se puede eliminar porque existe un producto asociado'
+            ], 500);
+          } 
+
+          if ($category->delete()) {
+            return response()->json([
                             'success' => true
                         ]);
-            } else {
+          } else {
                 return response()->json([
                             'success' => false,
                             'message' => 'La Categoría no pudo ser borrada'
             ], 500);
-                }
+            }
     }
 }
