@@ -52,4 +52,5 @@ Route::group(['prefix' => 'categories'], function () {
 	Route::post('create', [CategoriesController::class, 'store']);
 	Route::post('update/{id}', [CategoriesController::class, 'update']);
 	Route::delete('delete/{id}',[CategoriesController::class, 'destroy']);
+	Route::get('show/{id}',[CategoriesController::class, 'show']);
 });
