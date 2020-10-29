@@ -23,7 +23,8 @@ class ProductController extends Controller
         return: json con los datos del producto*/
 
         $products = Product::with('category:category_id,category_name','brand:brand_id,brand_name')
-        ->get();
+                    ->orderby('product_name') 
+                    ->get();
         return response()->json($products, 200);
     }
 
@@ -298,6 +299,30 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        //
+
+        /*
+        Esta funcion elimina los datos de un producto y su imagen 
+        dado un id 
+        parameter: id del producto
+        return: respuesta json de la transaccion.
+        */
+
+        $product =  Product::find($id);
+        if (!$product) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Producto con id ' . $id . ' no existe'
+            ], 400);
+        }else{
+            if ($product->delete()) {
+                Storage::delete('public'.substr($product->product_image,8));
+                return response()->json("Se elimino el producto correctamente", 200);
+            }else{
+                return response()->json([
+                    'success' => false,
+                    'message' => 'El producto no pudo ser eliminado'
+                ], 500);
+            }
+        }            
     }
 }

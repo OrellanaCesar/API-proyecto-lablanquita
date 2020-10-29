@@ -43,6 +43,7 @@ Route::group(['prefix' => 'products'], function () {
 	Route::get('order/ocupedBestSeller', [ProductController::class, 'ocupedBest']);
 	Route::post('dataTable',[ProductController::class, 'dataTableProducts'] );
 	Route::post('create', [ProductController::class, 'store']);
+	Route::delete('delete/{id}',[ProductController::class, 'destroy']);
 });
 
 Route::group(['prefix' => 'categories'], function () {
