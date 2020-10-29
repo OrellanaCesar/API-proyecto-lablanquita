@@ -9,7 +9,7 @@ use DataTables;
 class BrandController extends Controller
 {
     //
-    
+
     public function index()
     {
 
@@ -73,16 +73,23 @@ public function destroy($id)
     /*Estafuncion Destroy lo que haces es  buscar la marca con ese id y lo elimina 
     Parametros:recibe el parametro id ,que es el id de la marca a eliminar  
     Return:devuelve si pudo eliminar la marca o no */
-
-    $brand = Brand::find($id);
-    if ($brand->delete()) {
-        return response()->json([
-            'success' => true
-        ]);
-    } else {
+    $brand = Brand::find($id)->products;
+    if ($brand == null){
+        if ($brand->delete()) {
+            return response()->json([
+                'success' => true
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'La Marca no pudo ser borrada'
+            ], 500);
+        }
+    }
+    else{
         return response()->json([
             'success' => false,
-            'message' => 'La Marca no pudo ser borrada'
+            'message' => 'La Marca no puede ser borrada. tiene un producto asociado'
         ], 500);
     }
 }
@@ -113,7 +120,7 @@ public function update(Request $request, $id)
         ], 400);
     }
     $data = array(
-        'brand_name' => $request->brandname,
+        'brand_name' => $request->brand_name,
     );
 
     $updated = $brand->update($data);
@@ -128,6 +135,14 @@ public function update(Request $request, $id)
             'success' => false,
             'message' => 'La marca no se pudo actualizar'
         ], 500);
+}
+
+public function getBrand($id)
+{
+    $b = Brand::select('brands.brand_name')
+    ->where('brands.brand_id','=',$id)
+    ->get();
+    return response()->json($b, 200);
 }
 
 }

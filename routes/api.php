@@ -24,6 +24,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::group(['prefix' => 'brands'], function () {
 	Route::get('', [BrandController::class, 'index']);
+	Route::get('/{id}', [BrandController::class,'getBrand']);
 	Route::post('dataTable',[BrandController::class, 'dataTableBrands']);
 	Route::post('create', [BrandController::class, 'store']);
 	Route::post('update/{id}', [BrandController::class, 'update']);
@@ -36,9 +37,13 @@ Route::group(['prefix' => 'brands'], function () {
 Route::group(['prefix' => 'products'], function () {
 	Route::get('', [ProductController::class, 'index']);
 	Route::get('offerDay', [ProductController::class, 'offerDay']);
+	Route::get('/{id}',[ProductController::class,'show']);
+	Route::get('order/ocupedOfferDay', [ProductController::class, 'ocupedOffer']);
 	Route::get('bestSeller', [ProductController::class, 'bestSeller']);
+	Route::get('order/ocupedBestSeller', [ProductController::class, 'ocupedBest']);
 	Route::post('dataTable',[ProductController::class, 'dataTableProducts'] );
 	Route::post('create', [ProductController::class, 'store']);
+	Route::delete('delete/{id}',[ProductController::class, 'destroy']);
 });
 
 Route::group(['prefix' => 'categories'], function () {
@@ -47,4 +52,5 @@ Route::group(['prefix' => 'categories'], function () {
 	Route::post('create', [CategoriesController::class, 'store']);
 	Route::post('update/{id}', [CategoriesController::class, 'update']);
 	Route::delete('delete/{id}',[CategoriesController::class, 'destroy']);
+	Route::get('show/{id}',[CategoriesController::class, 'show']);
 });
