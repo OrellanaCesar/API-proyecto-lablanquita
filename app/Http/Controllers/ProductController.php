@@ -255,15 +255,6 @@ class ProductController extends Controller
         
     }
 
-    public function getProduct($id)
-    {
-        $p = Product::select('products.*','brands.brand_name','categories.category_name')
-        ->join('brands','products.brand_id', '=','brands.brand_id')
-        ->join('categories','products.category_id','=','categories.category_id')
-        ->where('products.product_id','=',$id)
-        ->get();
-        return response()->json($p, 200);
-    }
 
     /**
      * Display the specified resource.
@@ -276,6 +267,14 @@ class ProductController extends Controller
 
     public function show($id)
     {
+        /*Trae los datos de un producto
+        parametros: identificador del producto
+        salida: jason con los datos del producto*/
+        
+        $p = Product::with('category:category_id,category_name','brand:brand_id,brand_name')
+        ->where('product_id','=',$id)
+        ->get();
+        return response()->json($p, 200);
         //
     }
 

@@ -40,8 +40,8 @@ class Product extends Model
      * @var array
      */
     protected $hidden = [
-       'product_create_date','product_change_date'
-    ];
+     'product_create_date','product_change_date'
+ ];
 
     /**
      * The attributes that should be cast to native types.
