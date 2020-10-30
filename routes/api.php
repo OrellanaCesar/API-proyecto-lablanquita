@@ -36,6 +36,7 @@ Route::group(['prefix' => 'brands'], function () {
 
 Route::group(['prefix' => 'products'], function () {
 	Route::get('', [ProductController::class, 'index']);
+	Route::get('getProductsD', [ProductController::class, 'getProductsD']);
 	Route::get('offerDay', [ProductController::class, 'offerDay']);
 	Route::get('/{id}',[ProductController::class,'show']);
 	Route::get('order/ocupedOfferDay', [ProductController::class, 'ocupedOffer']);
