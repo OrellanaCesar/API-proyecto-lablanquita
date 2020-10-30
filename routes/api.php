@@ -36,6 +36,7 @@ Route::group(['prefix' => 'brands'], function () {
 
 Route::group(['prefix' => 'products'], function () {
 	Route::get('', [ProductController::class, 'index']);
+	Route::get('getProductsD', [ProductController::class, 'getProductsD']);
 	Route::get('offerDay', [ProductController::class, 'offerDay']);
 	Route::get('/{id}',[ProductController::class,'show']);
 	Route::get('order/ocupedOfferDay', [ProductController::class, 'ocupedOffer']);
@@ -43,6 +44,7 @@ Route::group(['prefix' => 'products'], function () {
 	Route::get('order/ocupedBestSeller', [ProductController::class, 'ocupedBest']);
 	Route::post('dataTable',[ProductController::class, 'dataTableProducts'] );
 	Route::post('create', [ProductController::class, 'store']);
+	Route::post('update/{id}',[ProductController::class , 'update']);
 	Route::delete('delete/{id}',[ProductController::class, 'destroy']);
 });
 
@@ -52,4 +54,5 @@ Route::group(['prefix' => 'categories'], function () {
 	Route::post('create', [CategoriesController::class, 'store']);
 	Route::post('update/{id}', [CategoriesController::class, 'update']);
 	Route::delete('delete/{id}',[CategoriesController::class, 'destroy']);
+	Route::get('show/{id}',[CategoriesController::class, 'show']);
 });

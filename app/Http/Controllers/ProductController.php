@@ -56,6 +56,17 @@ class ProductController extends Controller
         return response()->json($products, 200);
     }
 
+    public function getProductsD(){
+
+        $p = Product::select('products.*','brands.brand_name','categories.category_name')
+            ->join('brands','products.brand_id','=','brands.brand_id')
+            ->join('categories','products.category_id','=','categories.category_id')
+            ->orderby('product_name')                
+            ->get();
+        return response()->json($p, 200);
+        
+    }
+
     public function dataTableProducts(){
 
         /*Esta funcion devuelve un DataTable con todos los datos de productos ordenados por el
@@ -64,13 +75,17 @@ class ProductController extends Controller
         Parameters : no se le pasa ningun parametro
         Return : una tabla con los atributos de las productos ordenadas por nombres */
 
-        
-        return DataTables::of(Product::with('category:category_id,category_name','brand:brand_id,brand_name')
+        $p = Product::select('products.*','brands.brand_name','categories.category_name')
+            ->join('brands','products.brand_id','=','brands.brand_id')
+            ->join('categories','products.category_id','=','categories.category_id')
             ->orderby('product_name')                
-            ->get())
-        ->addColumn('accion', function($b){
-            return '';
-        })->make(true);
+            ->get();
+
+        return datatables()->of($p)->addColumn('action', function($prod){
+                            return '';
+                        ;
+                    })->rawColumns( ['action'] )
+                    ->make(true);
     }
 
     /**
@@ -205,6 +220,13 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
+        /* 
+        Esta funcion crea un producto.
+        parameter: los datos del producto.
+        return: un json , 200 si se pudo realizar el alta del producto y 
+        500 en caso contrario
+        */ 
+
         $validaData = $request->validate([
             'product_name' => ['required','string'],
             'product_description' => ['required','string'],
@@ -268,9 +290,11 @@ class ProductController extends Controller
 
     public function show($id)
     {
-        /*Trae los datos de un producto
+        /*
+        Trae los datos de un producto
         parametros: identificador del producto
-        salida: jason con los datos del producto*/
+        salida: jason con los datos del producto
+        */
         
         $p = Product::with('category:category_id,category_name','brand:brand_id,brand_name')
         ->where('product_id','=',$id)
@@ -288,7 +312,82 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+
+        /* 
+        Esta funcion actualiza los datos de u  producto.
+        paramter: el id del producto a modificar y los nuevos datos pasados en la request.
+        return: mensaje de exito o fracaso.
+        */
+
+        $validaData = $request->validate([
+            'product_name' => ['required','string'],
+            'product_description' => ['required','string'],
+            'product_price' => ['required'],
+            'product_stock' => ['required'],
+            'product_offer_day' => ['required'],
+            'product_best_seller' => ['required'],
+            'product_offer_day_order' => ['required'],
+            'product_best_seller_order' => ['required'],
+            'brand_id' => ['required'],
+            'category_id' => ['required'],
+        ]);
+
+        $product = Product::find($id);
+        if (!$product) {
+            return response()->json([
+                'success' => false,
+                'message' => 'El producto con ' . $id . ' no fue encontrado.'
+            ], 400);
+        }
+        if ($request->hasFile('product_image')) {
+            
+            $path_old = $product->product_image;
+            $path = Storage::disk('public')->put('image/products', $request->file('product_image'));
+            $path = Storage::url($path);
+            $path_new = $path;
+
+        }else{
+            
+            $path = $product->product_image;
+        }
+        $data = array(
+            'product_name' => $request->product_name,
+            'product_description' => $request->product_description,
+            'product_price' => $request->product_price,
+            'product_stock' => $request->product_stock,
+            'product_offer_day' => $request->product_offer_day,
+            'product_best_seller' => $request->product_best_seller,
+            'product_offer_day_order' => $request->product_offer_day_order,
+            'product_best_seller_order' => $request->product_best_seller_order,
+            'product_image' => $path,
+            'brand_id' => $request->brand_id,
+            'category_id' => $request->category_id
+        );
+        $this->actulizaCarousel(
+            $data['product_offer_day_order'],
+            $data['product_best_seller_order'],
+            $data['product_offer_day'],
+            $data['product_best_seller']
+        );
+        if ($product->update($data)) {
+            if ($request->hasFile('product_image')) {
+                Storage::delete('public'.substr($path_old,8));
+            }
+            return response()->json([
+                'success' => true,
+                'message' => 'El producto se modifico correctamente'
+            ], 200);
+        }else {
+            if ($request->hasFile('product_image')) {
+                Storage::delete('public'.substr($path_new,8));
+            }
+            return response()->json([
+                'success' => false,
+                'message' => 'El producto no pudo ser modificado'
+            ], 500);
+        }
+
+
     }
 
     /**
