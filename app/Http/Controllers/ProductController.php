@@ -56,6 +56,17 @@ class ProductController extends Controller
         return response()->json($products, 200);
     }
 
+    public function getProductsD(){
+
+        $p = Product::select('products.*','brands.brand_name','categories.category_name')
+            ->join('brands','products.brand_id','=','brands.brand_id')
+            ->join('categories','products.category_id','=','categories.category_id')
+            ->orderby('product_name')                
+            ->get();
+        return response()->json($p, 200);
+        
+    }
+
     public function dataTableProducts(){
 
         /*Esta funcion devuelve un DataTable con todos los datos de productos ordenados por el
@@ -64,13 +75,17 @@ class ProductController extends Controller
         Parameters : no se le pasa ningun parametro
         Return : una tabla con los atributos de las productos ordenadas por nombres */
 
-        
-        return DataTables::of(Product::with('category:category_id,category_name','brand:brand_id,brand_name')
+        $p = Product::select('products.*','brands.brand_name','categories.category_name')
+            ->join('brands','products.brand_id','=','brands.brand_id')
+            ->join('categories','products.category_id','=','categories.category_id')
             ->orderby('product_name')                
-            ->get())
-        ->addColumn('accion', function($b){
-            return '';
-        })->make(true);
+            ->get();
+
+        return datatables()->of($p)->addColumn('action', function($prod){
+                            return '';
+                        ;
+                    })->rawColumns( ['action'] )
+                    ->make(true);
     }
 
     /**
