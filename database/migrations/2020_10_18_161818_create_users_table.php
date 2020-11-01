@@ -21,7 +21,7 @@ class CreateUsersTable extends Migration
             $table->string('user_email')->unique();
             $table->timestamp('user_create_date')->nullable();
             $table->timestamp('user_change_date')->nullable();
-            $table->boolean('user_notices');
+            //$table->boolean('user_notices');
             $table->rememberToken();
             $table->foreign('profile_id')->references('profile_id')->on('profiles');
         });

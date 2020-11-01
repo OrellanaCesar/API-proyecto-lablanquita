@@ -6,20 +6,26 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable,HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
+    const CREATED_AT = 'user_create_date';
+    const UPDATED_AT = 'user_change_date';
+
+    protected $primaryKey = 'user_id';
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+        'user_name',
+        'user_email',
+        'user_password',
+        'profile_id'
     ];
 
     /**
@@ -40,4 +46,8 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function getAuthPassword() {
+        return $this->user_password;
+    }
 }
