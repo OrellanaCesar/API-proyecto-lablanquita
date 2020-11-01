@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Category;
+use App\Models\Brand;
 use DataTables;
 
 class CategoriesController extends Controller
@@ -160,5 +161,28 @@ class CategoriesController extends Controller
                             'message' => 'La Categoría no pudo ser borrada'
             ], 500);
             }
+    }
+
+    public function searchProducts($id){
+        $category = Category::find($id);
+        $products_category = Category::find($id)->products;
+        $products = array();
+        foreach ($products_category as $p) {
+            $brand = Brand::find($p->brand_id);
+            $data['product_id'] = $p->product_id;
+            $data['product_name'] = $p->product_name;
+            $data['product_description'] = $p->product_description;
+            $data['product_price'] = $p->product_price;
+            $data['product_image'] = $p->product_image;
+            $data['product_stock'] = $p->product_stock;
+            $data['product_offer_day'] = $p->product_offer_day;
+            $data['product_offer_day_order'] = $p->product_offer_day_order;
+            $data['product_best_seller'] = $p->product_best_seller;
+            $data['product_best_seller_order'] = $p->product_best_seller_order;
+            $data['category'] = $category;
+            $data['brand'] = $brand;
+            array_push($products,$data);
+        }
+        return response()->json($data, 200);
     }
 }

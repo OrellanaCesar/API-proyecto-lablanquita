@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Brand;
+use App\Models\Category;
 use DataTables;
 
 class BrandController extends Controller
@@ -137,12 +138,34 @@ public function update(Request $request, $id)
         ], 500);
 }
 
-public function getBrand($id)
-{
+public function getBrand($id){
     $b = Brand::select('brands.brand_name')
     ->where('brands.brand_id','=',$id)
     ->get();
     return response()->json($b, 200);
+}
+
+public function searchProducts($id){
+    $brand = Brand::find($id);
+    $products_brand = Brand::find($id)->products;
+    $products = array();
+    foreach ($products_brand as $p) {
+        $category = Category::find($p->category_id);
+        $data['product_id'] = $p->product_id;
+        $data['product_name'] = $p->product_name;
+        $data['product_description'] = $p->product_description;
+        $data['product_price'] = $p->product_price;
+        $data['product_image'] = $p->product_image;
+        $data['product_stock'] = $p->product_stock;
+        $data['product_offer_day'] = $p->product_offer_day;
+        $data['product_offer_day_order'] = $p->product_offer_day_order;
+        $data['product_best_seller'] = $p->product_best_seller;
+        $data['product_best_seller_order'] = $p->product_best_seller_order;
+        $data['category'] = $category;
+        $data['brand'] = $brand;
+        array_push($products,$data);
+    }
+    return response()->json($data, 200);
 }
 
 }

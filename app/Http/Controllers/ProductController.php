@@ -310,8 +310,7 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
+    public function update(Request $request, $id){
 
         /* 
         Esta funcion actualiza los datos de u  producto.
@@ -396,8 +395,7 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
+    public function destroy($id){
 
         /*
         Esta funcion elimina los datos de un producto y su imagen 
@@ -423,5 +421,28 @@ class ProductController extends Controller
                 ], 500);
             }
         }            
+    }
+
+    public function searchProducts(Request $request){
+        $products_search = Product::select('products.*','brands.brand_name','categories.category_name')
+                    ->join('brands','products.brand_id','=','brands.brand_id')
+                    ->join('categories','products.category_id','=','categories.category_id')
+                    ->where('products.product_name','like','%'.$request->product_name.'%')
+                    ->orWhere('products.product_name','like','%'.strtoupper($request->product_name).'%')
+                    ->orWhere('products.product_description','like','%'.$request->product_description.'%')
+                    ->orWhere('products.product_description','like','%'.strtoupper($request->product_description).'%')
+                    ->orWhere('brands.brand_name','like','%'.strtoupper($request->brand_name).'%')
+                    ->orWhere('categories.category_name','like','%'.strtoupper($request->category_name).'%')                
+                    ->get();
+
+        $data = array();
+        foreach ($products_search as $p) {
+            $prod = Product::with('category:category_id,category_name','brand:brand_id,brand_name')
+                    ->find($p->product_id);
+            array_push($data,$prod);
+                    
+        }
+        return response()->json($data, 200 );
+                
     }
 }
