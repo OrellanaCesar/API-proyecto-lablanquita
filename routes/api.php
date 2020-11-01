@@ -37,6 +37,7 @@ Route::group(['prefix' => 'auth'], function () {
 Route::group(['prefix' => 'brands'], function () {
 	Route::get('', [BrandController::class, 'index']);
 	Route::get('/{id}', [BrandController::class,'getBrand']);
+	Route::get('searchProducts/{id}', [BrandController::class,'searchProducts']);
 	Route::post('dataTable',[BrandController::class, 'dataTableBrands']);
 	Route::post('create', [BrandController::class, 'store']);
 	Route::post('update/{id}', [BrandController::class, 'update']);
@@ -57,11 +58,13 @@ Route::group(['prefix' => 'products'], function () {
 	Route::post('dataTable',[ProductController::class, 'dataTableProducts'] );
 	Route::post('create', [ProductController::class, 'store']);
 	Route::post('update/{id}',[ProductController::class , 'update']);
+	Route::post('searchProducts',[ProductController::class, 'searchProducts'] );
 	Route::delete('delete/{id}',[ProductController::class, 'destroy']);
 });
 
 Route::group(['prefix' => 'categories'], function () {
 	Route::get('', [CategoriesController::class, 'index']);
+	Route::get('searchProducts/{id}', [CategoriesController::class, 'searchProducts']);
 	Route::post('dataTable',[CategoriesController::class, 'dataTableCategories']);
 	Route::post('create', [CategoriesController::class, 'store']);
 	Route::post('update/{id}', [CategoriesController::class, 'update']);
