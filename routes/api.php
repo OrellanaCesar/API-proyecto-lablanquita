@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoriesController;
+use App\Http\Controllers\MessagesController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -33,6 +34,10 @@ Route::group(['prefix' => 'auth'], function () {
     });
 });
 
+
+Route::group(['prefix' => 'contacto'],function(){
+	Route::post('', [MessagesController::class, 'store']);
+});
 
 Route::group(['prefix' => 'brands'], function () {
 	Route::get('', [BrandController::class, 'index']);
