@@ -18,7 +18,7 @@ class MessagesController extends Controller
 			'comentario' => 'required']);
 
 
-		Mail::to('pablofacundoorellana@gmail.com')->send(new MessageReceived($mensaje));
+		Mail::to('limpiezablanquita.contacto@gmail.com')->send(new MessageReceived($mensaje));
 
 	}
 }
