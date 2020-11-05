@@ -5,7 +5,7 @@
 	<title>Mensaje Recibido</title>
 </head>
 <body>
-	<img src="logo.jpeg" width="250" height="250" style="align-content: middle">
+	{{-- <img src="logo.jpeg" width="250" height="250" style="align-content: middle"> --}}
 	<p><strong>Recibiste un Mensaje de:</strong> {{$mensaje['nombre']}} {{$mensaje['apellido']}}</p>
 	<p><strong>Correo:</strong> {{$mensaje['email']}}</p>
 	<p><strong>Provincia:</strong> {{$mensaje['provincia']}}</p>

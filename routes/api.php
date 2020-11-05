@@ -54,12 +54,12 @@ Route::group(['prefix' => 'brands'], function () {
 
 Route::group(['prefix' => 'products'], function () {
 	Route::get('', [ProductController::class, 'index']);
+	Route::get('bestSeller', [ProductController::class, 'bestSeller']);
 	Route::get('getProductsD', [ProductController::class, 'getProductsD']);
 	Route::get('offerDay', [ProductController::class, 'offerDay']);
-	Route::get('/{id}',[ProductController::class,'show']);
 	Route::get('order/ocupedOfferDay', [ProductController::class, 'ocupedOffer']);
-	Route::get('bestSeller', [ProductController::class, 'bestSeller']);
 	Route::get('order/ocupedBestSeller', [ProductController::class, 'ocupedBest']);
+	Route::get('/{id}',[ProductController::class,'show']);
 	Route::post('dataTable',[ProductController::class, 'dataTableProducts'] );
 	Route::post('create', [ProductController::class, 'store']);
 	Route::post('update/{id}',[ProductController::class , 'update']);

@@ -53,6 +53,7 @@ class ProductController extends Controller
         ->with('category:category_id,category_name','brand:brand_id,brand_name')
         ->orderby('product_best_seller_order','asc')
         ->get();
+
         return response()->json($products, 200);
     }
 
