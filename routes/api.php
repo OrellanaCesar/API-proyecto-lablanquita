@@ -7,6 +7,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\MessagesController;
+use App\Http\Controllers\UserController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -24,19 +25,23 @@ use App\Http\Controllers\MessagesController;
 });*/
 
 Route::group(['prefix' => 'auth'], function () {
-    Route::post('login', [AuthController::class,'login']);
+	Route::post('login', [AuthController::class,'login']);
 	Route::post('signupAdministrador', [AuthController::class,'signupAdministrador']);
 	Route::post('signupCliente', [AuthController::class,'signupCliente']);
-  
-    Route::group(['middleware' => 'auth:api'], function() {
-        Route::get('logout',[AuthController::class,'logout']);
-        Route::get('user',[AuthController::class,'user']);
-    });
+
+	Route::group(['middleware' => 'auth:api'], function() {
+		Route::get('logout',[AuthController::class,'logout']);
+		Route::get('user',[AuthController::class,'user']);
+	});
 });
 
 
 Route::group(['prefix' => 'contacto'],function(){
 	Route::post('', [MessagesController::class, 'store']);
+});
+
+Route::group(['prefix' => 'users'],function(){
+	Route::post('dataTable', [UserController::class, 'dataTableUsers']);
 });
 
 Route::group(['prefix' => 'brands'], function () {
