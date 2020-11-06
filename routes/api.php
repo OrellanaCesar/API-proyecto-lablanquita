@@ -2,9 +2,11 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoriesController;
+use App\Http\Controllers\MessagesController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -17,10 +19,25 @@ use App\Http\Controllers\CategoriesController;
 */
 
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
+/*Route::middleware('auth:api')->get('/user', function (Request $request) {
 	return $request->user();
+});*/
+
+Route::group(['prefix' => 'auth'], function () {
+    Route::post('login', [AuthController::class,'login']);
+	Route::post('signupAdministrador', [AuthController::class,'signupAdministrador']);
+	Route::post('signupCliente', [AuthController::class,'signupCliente']);
+  
+    Route::group(['middleware' => 'auth:api'], function() {
+        Route::get('logout',[AuthController::class,'logout']);
+        Route::get('user',[AuthController::class,'user']);
+    });
 });
 
+
+Route::group(['prefix' => 'contacto'],function(){
+	Route::post('', [MessagesController::class, 'store']);
+});
 
 Route::group(['prefix' => 'brands'], function () {
 	Route::get('', [BrandController::class, 'index']);
@@ -37,12 +54,12 @@ Route::group(['prefix' => 'brands'], function () {
 
 Route::group(['prefix' => 'products'], function () {
 	Route::get('', [ProductController::class, 'index']);
+	Route::get('bestSeller', [ProductController::class, 'bestSeller']);
 	Route::get('getProductsD', [ProductController::class, 'getProductsD']);
 	Route::get('offerDay', [ProductController::class, 'offerDay']);
-	Route::get('/{id}',[ProductController::class,'show']);
 	Route::get('order/ocupedOfferDay', [ProductController::class, 'ocupedOffer']);
-	Route::get('bestSeller', [ProductController::class, 'bestSeller']);
 	Route::get('order/ocupedBestSeller', [ProductController::class, 'ocupedBest']);
+	Route::get('/{id}',[ProductController::class,'show']);
 	Route::post('dataTable',[ProductController::class, 'dataTableProducts'] );
 	Route::post('create', [ProductController::class, 'store']);
 	Route::post('update/{id}',[ProductController::class , 'update']);
