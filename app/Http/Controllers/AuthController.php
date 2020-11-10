@@ -132,5 +132,46 @@ class AuthController extends Controller
         return response()->json($request->user());
     }
 
+    public function update(Request $request){
+         /* Esta función modifica los datos del usuario logueado .
+        Parámetros: recibe el 'request' que tendrá los datos que se modificaron.
+        Return: Devuelve un mensaje indicando si se pudo realizar la operación de actualización
+         */
+
+        $user = $request->user();
+
+        $validaData = $request->validate([
+            'user_name' => 'required|string',
+            'user_email' => 'required|string|email|unique:users',
+            'user_password' => 'required|string|confirmed'
+        ]);
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al buscar al usuario logueado'
+            ], 400);
+        }
+
+        $data = array(
+            'user_name' => $request->user_name,
+            'user_email' => $request->user_email,
+            'user_password'=>bcrypt($request->user_password)
+        );  
+
+        $updated = $user->update($data);
+
+        if ($updated)
+        return response()->json([
+            'success' => true,
+            'message' => 'Los datos se han modificado con éxito'
+
+        ],200);
+        else
+            return response()->json([
+                'success' => false,
+                'message' => 'Los datos del usuario no pudieron actualizarse'
+            ], 500);
+    }
 
 }

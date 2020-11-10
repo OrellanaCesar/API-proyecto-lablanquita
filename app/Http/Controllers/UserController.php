@@ -14,8 +14,7 @@ class UserController extends Controller
 
 
 
-	public function dataTableUsers()
-	{  
+	public function dataTableUsers(){  
 
         /*Esta funcion devuelve un DataTable con los datos de los usarios y sus perfiles
         Parametros : no se le pasa ningun parametro
@@ -29,4 +28,6 @@ class UserController extends Controller
         	return '';
         })->make(true);
     }
+
+    
 }
