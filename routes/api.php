@@ -28,6 +28,7 @@ Route::group(['prefix' => 'auth'], function () {
 	Route::post('login', [AuthController::class,'login']);
 	Route::post('signupAdministrador', [AuthController::class,'signupAdministrador']);
 	Route::post('signupCliente', [AuthController::class,'signupCliente']);
+	Route::post('recoverPass',[AuthController::class, 'recoverPass'] );
 
 	Route::group(['middleware' => 'auth:api'], function() {
 		Route::get('logout',[AuthController::class,'logout']);
@@ -70,6 +71,7 @@ Route::group(['prefix' => 'products'], function () {
 	Route::post('create', [ProductController::class, 'store']);
 	Route::post('update/{id}',[ProductController::class , 'update']);
 	Route::post('searchProducts',[ProductController::class, 'searchProducts'] );
+	
 	Route::delete('delete/{id}',[ProductController::class, 'destroy']);
 });
 

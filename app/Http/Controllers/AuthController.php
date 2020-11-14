@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use App\Mail\MessageRecover;
 use App\Models\User;
+use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
@@ -173,5 +175,63 @@ class AuthController extends Controller
                 'message' => 'Los datos del usuario no pudieron actualizarse'
             ], 500);
     }
+
+    public function esconderEmail($email)
+    {
+        $email_new = $email;
+        for ($i=0; $i < strlen($email) ; $i++) { 
+            if ( ($i >= 4) && ($i<strlen($email)-10)){
+                $email_new[$i] = '*';
+            }
+        }
+        return $email_new;   
+    }
+
+    public function recoverPass(Request $request)
+    {
+        $request->validate([
+            'user_email' => 'required|string|email'
+        ]);
+        
+        $user = User::where('user_email','=',$request->user_email)
+                ->get();
+        if (sizeof($user) == 0 ) {
+            
+            return response()->json([
+                "message" => "No existe usuario con ese email",
+                "status" => 500]
+                , 500);
+        }else{
+            $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyz';
+            $pass = substr(str_shuffle($permitted_chars),0,8);
+            $mensaje = array(
+                'password' => $pass
+            );
+            // return response()->json($user[0]->user_email, 200);
+            $data = array(
+                'user_password' => bcrypt($pass)
+            );
+            $id = $user[0]->user_id;
+            $user = User::find($id);
+            // return response()->json($user, 200);
+            $updated = $user->update($data);
+            if ($updated) {
+                Mail::to($user->user_email)->send(new MessageRecover($mensaje));
+                return response()->json([
+                    "message" => "Se envio una nueva contraseña al correo ".$this->esconderEmail($user->user_email), 
+                    "status" => 200], 200);            
+            }else{
+                return response()->json([
+                    "message" => "Hubo en error al actualizar su contraseña. Por favor intente nuevamente.",
+                    "status" => 404], 404);
+            }
+            
+            
+        }
+        
+    }
+
+    
+
 
 }
