@@ -43,6 +43,8 @@ Route::group(['prefix' => 'contacto'],function(){
 
 Route::group(['prefix' => 'users'],function(){
 	Route::post('dataTable', [UserController::class, 'dataTableUsers']);
+	Route::get('',[UserController::class, 'getUsers']);
+	Route::delete('delete/{id}',[UserController::class, 'destroy']);
 });
 
 Route::group(['prefix' => 'brands'], function () {
