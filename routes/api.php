@@ -39,10 +39,15 @@ Route::group(['prefix' => 'auth'], function () {
 
 Route::group(['prefix' => 'contacto'],function(){
 	Route::post('', [MessagesController::class, 'store']);
+	
 });
 
 Route::group(['prefix' => 'users'],function(){
 	Route::post('dataTable', [UserController::class, 'dataTableUsers']);
+	Route::group(['middleware' => 'auth:api'], function (){
+		Route::post('usersClients', [UserController::class, 'usersClients']);
+		Route::post('sendMailClients/{type}', [UserController::class, 'sendMailClients']);
+	});
 });
 
 Route::group(['prefix' => 'brands'], function () {
