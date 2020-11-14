@@ -134,9 +134,57 @@ class AuthController extends Controller
         return response()->json($request->user());
     }
 
+    public function update(Request $request){
+         /* Esta función modifica los datos del usuario logueado .
+        Parámetros: recibe el 'request' que tendrá los datos que se modificaron.
+        Return: Devuelve un mensaje indicando si se pudo realizar la operación de actualización
+         */
+
+        $user = $request->user();
+
+        $validaData = $request->validate([
+            'user_name' => 'required|string',
+            'user_email' => 'required|string|email',
+            'user_password' => 'required|string|confirmed'
+        ]);
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al buscar al usuario logueado'
+            ], 400);
+        }
+
+        $data = array(
+            'user_name' => $request->user_name,
+            'user_email' => $request->user_email,
+            'user_password'=>bcrypt($request->user_password)
+        );  
+
+        $updated = $user->update($data);
+
+        if ($updated)
+        return response()->json([
+            'success' => true,
+            'message' => 'Los datos se han modificado con éxito'
+
+        ],200);
+        else
+            return response()->json([
+                'success' => false,
+                'message' => 'Los datos del usuario no pudieron actualizarse'
+            ], 500);
+    }
 
     public function esconderEmail($email)
     {
+
+        /*
+        Esta funcion concierte los caracteres del email en el caracter '*'.
+        parameter: el email que se quiere esconder.
+        return: un string del email escondido.
+        */
+
         $email_new = $email;
         for ($i=0; $i < strlen($email) ; $i++) { 
             if ( ($i >= 4) && ($i<strlen($email)-10)){
@@ -147,7 +195,16 @@ class AuthController extends Controller
     }
 
     public function recoverPass(Request $request)
-    {
+    {   
+
+        /*
+        Esta funcion crea una nueva contraseña y se la envia al correo
+        que del usuairo correspodiente.
+        parameter: email del usuario.
+        return: respuesta json con mensajes si se realizo o no correctamente 
+        la operacion.
+        */
+
         $request->validate([
             'user_email' => 'required|string|email'
         ]);
@@ -166,13 +223,12 @@ class AuthController extends Controller
             $mensaje = array(
                 'password' => $pass
             );
-            // return response()->json($user[0]->user_email, 200);
             $data = array(
                 'user_password' => bcrypt($pass)
             );
             $id = $user[0]->user_id;
             $user = User::find($id);
-            // return response()->json($user, 200);
+
             $updated = $user->update($data);
             if ($updated) {
                 Mail::to($user->user_email)->send(new MessageRecover($mensaje));
@@ -189,8 +245,6 @@ class AuthController extends Controller
         }
         
     }
-
-    
 
 
 }

@@ -33,16 +33,22 @@ Route::group(['prefix' => 'auth'], function () {
 	Route::group(['middleware' => 'auth:api'], function() {
 		Route::get('logout',[AuthController::class,'logout']);
 		Route::get('user',[AuthController::class,'user']);
+		Route::post('update',[AuthController::class,'update']);
 	});
 });
 
 
 Route::group(['prefix' => 'contacto'],function(){
 	Route::post('', [MessagesController::class, 'store']);
+	
 });
 
 Route::group(['prefix' => 'users'],function(){
 	Route::post('dataTable', [UserController::class, 'dataTableUsers']);
+	Route::group(['middleware' => 'auth:api'], function (){
+		Route::post('usersClients', [UserController::class, 'usersClients']);
+		Route::post('sendMailClients/{type}', [UserController::class, 'sendMailClients']);
+	});
 	Route::get('',[UserController::class, 'getUsers']);
 	Route::delete('delete/{id}',[UserController::class, 'destroy']);
 });
