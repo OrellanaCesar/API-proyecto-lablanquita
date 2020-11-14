@@ -178,6 +178,13 @@ class AuthController extends Controller
 
     public function esconderEmail($email)
     {
+
+        /*
+        Esta funcion concierte los caracteres del email en el caracter '*'.
+        parameter: el email que se quiere esconder.
+        return: un string del email escondido.
+        */
+
         $email_new = $email;
         for ($i=0; $i < strlen($email) ; $i++) { 
             if ( ($i >= 4) && ($i<strlen($email)-10)){
@@ -188,7 +195,16 @@ class AuthController extends Controller
     }
 
     public function recoverPass(Request $request)
-    {
+    {   
+
+        /*
+        Esta funcion crea una nueva contraseña y se la envia al correo
+        que del usuairo correspodiente.
+        parameter: email del usuario.
+        return: respuesta json con mensajes si se realizo o no correctamente 
+        la operacion.
+        */
+
         $request->validate([
             'user_email' => 'required|string|email'
         ]);
@@ -207,13 +223,12 @@ class AuthController extends Controller
             $mensaje = array(
                 'password' => $pass
             );
-            // return response()->json($user[0]->user_email, 200);
             $data = array(
                 'user_password' => bcrypt($pass)
             );
             $id = $user[0]->user_id;
             $user = User::find($id);
-            // return response()->json($user, 200);
+
             $updated = $user->update($data);
             if ($updated) {
                 Mail::to($user->user_email)->send(new MessageRecover($mensaje));
@@ -230,8 +245,6 @@ class AuthController extends Controller
         }
         
     }
-
-    
 
 
 }
