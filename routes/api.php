@@ -45,6 +45,8 @@ Route::group(['prefix' => 'contacto'],function(){
 
 Route::group(['prefix' => 'users'],function(){
 	Route::post('dataTable', [UserController::class, 'dataTableUsers']);
+	Route::get('',[UserController::class, 'getUsers']);
+	Route::delete('delete/{id}',[UserController::class, 'destroy']);
 	Route::group(['middleware' => 'auth:api'], function (){
 		Route::post('usersClients', [UserController::class, 'usersClients']);
 		Route::post('sendMailClients/{type}', [UserController::class, 'sendMailClients']);
