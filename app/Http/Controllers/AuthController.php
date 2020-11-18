@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use App\Mail\MessageRecover;
 use App\Models\User;
+use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
@@ -130,6 +132,118 @@ class AuthController extends Controller
      * @return [json] user object
      */
         return response()->json($request->user());
+    }
+
+    public function update(Request $request){
+         /* Esta función modifica los datos del usuario logueado .
+        Parámetros: recibe el 'request' que tendrá los datos que se modificaron.
+        Return: Devuelve un mensaje indicando si se pudo realizar la operación de actualización
+         */
+
+        $user = $request->user();
+
+        $validaData = $request->validate([
+            'user_name' => 'required|string',
+            'user_email' => 'required|string|email',
+            'user_password' => 'required|string|confirmed'
+        ]);
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al buscar al usuario logueado'
+            ], 400);
+        }
+
+        $data = array(
+            'user_name' => $request->user_name,
+            'user_email' => $request->user_email,
+            'user_password'=>bcrypt($request->user_password)
+        );  
+
+        $updated = $user->update($data);
+
+        if ($updated)
+        return response()->json([
+            'success' => true,
+            'message' => 'Los datos se han modificado con éxito'
+
+        ],200);
+        else
+            return response()->json([
+                'success' => false,
+                'message' => 'Los datos del usuario no pudieron actualizarse'
+            ], 500);
+    }
+
+    public function esconderEmail($email)
+    {
+
+        /*
+        Esta funcion concierte los caracteres del email en el caracter '*'.
+        parameter: el email que se quiere esconder.
+        return: un string del email escondido.
+        */
+
+        $email_new = $email;
+        for ($i=0; $i < strlen($email) ; $i++) { 
+            if ( ($i >= 4) && ($i<strlen($email)-10)){
+                $email_new[$i] = '*';
+            }
+        }
+        return $email_new;   
+    }
+
+    public function recoverPass(Request $request)
+    {   
+
+        /*
+        Esta funcion crea una nueva contraseña y se la envia al correo
+        que del usuairo correspodiente.
+        parameter: email del usuario.
+        return: respuesta json con mensajes si se realizo o no correctamente 
+        la operacion.
+        */
+
+        $request->validate([
+            'user_email' => 'required|string|email'
+        ]);
+        
+        $user = User::where('user_email','=',$request->user_email)
+                ->get();
+        if (sizeof($user) == 0 ) {
+            
+            return response()->json([
+                "message" => "No existe usuario con ese email",
+                "status" => 500]
+                , 500);
+        }else{
+            $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyz';
+            $pass = substr(str_shuffle($permitted_chars),0,8);
+            $mensaje = array(
+                'password' => $pass
+            );
+            $data = array(
+                'user_password' => bcrypt($pass)
+            );
+            $id = $user[0]->user_id;
+            $user = User::find($id);
+
+            $updated = $user->update($data);
+            if ($updated) {
+                Mail::to($user->user_email)->send(new MessageRecover($mensaje));
+                return response()->json([
+                    "message" => "Se envio una nueva contraseña al correo ".$this->esconderEmail($user->user_email), 
+                    "status" => 200], 200);            
+            }else{
+                return response()->json([
+                    "message" => "Hubo en error al actualizar su contraseña. Por favor intente nuevamente.",
+                    "status" => 404], 404);
+            }
+            
+            
+        }
+        
     }
 
 

@@ -71,11 +71,17 @@ public function store(Request $request)
 public function destroy($id)
 {
 
-    /*Estafuncion Destroy lo que haces es  buscar la marca con ese id y lo elimina 
+    /*
+    Estafuncion Destroy lo que haces es  buscar la marca con ese id y lo elimina 
     Parametros:recibe el parametro id ,que es el id de la marca a eliminar  
-    Return:devuelve si pudo eliminar la marca o no */
+    Return:devuelve si pudo eliminar la marca o no 
+    */
+    
     $brand = Brand::find($id)->products;
-    if ($brand == null){
+    
+    if (sizeof($brand) == 0){
+
+        $brand = Brand::find($id);
         if ($brand->delete()) {
             return response()->json([
                 'success' => true
@@ -86,8 +92,8 @@ public function destroy($id)
                 'message' => 'La Marca no pudo ser borrada'
             ], 500);
         }
-    }
-    else{
+    }else{
+
         return response()->json([
             'success' => false,
             'message' => 'La Marca no puede ser borrada. tiene un producto asociado'

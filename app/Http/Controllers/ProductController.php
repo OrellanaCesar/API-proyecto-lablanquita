@@ -44,10 +44,12 @@ class ProductController extends Controller
 
     public function bestSeller(){
 
-        /*Esta funcion devuelve todos los productos mas vendido  y sus marcas y categorias
+        /*
+        Esta funcion devuelve todos los productos mas vendido  y sus marcas y categorias
         correspondiente  
         Parameters: no recibe
-        return: json con los datos del producto*/
+        return: json con los datos del producto
+        */
 
         $products = Product::where('product_best_seller','=',true)
         ->with('category:category_id,category_name','brand:brand_id,brand_name')
@@ -58,6 +60,12 @@ class ProductController extends Controller
     }
 
     public function getProductsD(){
+
+        /*
+        Esta funcion se creo para recargar el dataTable cuando se elimina un producto.
+        parameter:no hay.
+        return: json con los datos del producto
+        */
 
         $p = Product::select('products.*','brands.brand_name','categories.category_name')
             ->join('brands','products.brand_id','=','brands.brand_id')
@@ -425,6 +433,13 @@ class ProductController extends Controller
     }
 
     public function searchProducts(Request $request){
+
+        /*
+        Esta funcion busca los productos que conciden con la request.
+        parameter:no hay.
+        return: no hay.
+        */
+
         $products_search = Product::select('products.*','brands.brand_name','categories.category_name')
                     ->join('brands','products.brand_id','=','brands.brand_id')
                     ->join('categories','products.category_id','=','categories.category_id')
