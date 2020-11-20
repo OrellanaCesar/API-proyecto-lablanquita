@@ -366,20 +366,23 @@ class ProductController extends Controller
             'product_description' => $request->product_description,
             'product_price' => $request->product_price,
             'product_stock' => $request->product_stock,
-            'product_offer_day' => $request->product_offer_day,
-            'product_best_seller' => $request->product_best_seller,
-            'product_offer_day_order' => $request->product_offer_day_order,
-            'product_best_seller_order' => $request->product_best_seller_order,
+            'product_offer_day' => intval($request->product_offer_day),
+            'product_best_seller' => intval($request->product_best_seller),
+            'product_offer_day_order' => intval($request->product_offer_day_order),
+            'product_best_seller_order' => intval($request->product_best_seller_order),
             'product_image' => $path,
             'brand_id' => $request->brand_id,
             'category_id' => $request->category_id
         );
+        
         $this->actulizaCarousel(
             $data['product_offer_day_order'],
             $data['product_best_seller_order'],
             $data['product_offer_day'],
             $data['product_best_seller']
         );
+
+        
         if ($product->update($data)) {
             if ($request->hasFile('product_image')) {
                 Storage::delete('public'.substr($path_old,8));
