@@ -382,7 +382,7 @@ class ProductController extends Controller
             $data['product_best_seller']
         );
 
-        
+        $product = Product::find($id);
         if ($product->update($data)) {
             if ($request->hasFile('product_image')) {
                 Storage::delete('public'.substr($path_old,8));
