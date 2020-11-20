@@ -127,7 +127,7 @@ public function update(Request $request, $id)
         ], 400);
     }
     $data = array(
-        'brand_name' => $request->brand_name,
+        'brand_name' => strtoupper($request->brand_name),
     );
 
     $updated = $brand->update($data);
