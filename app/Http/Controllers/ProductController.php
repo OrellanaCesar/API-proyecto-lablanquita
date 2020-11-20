@@ -104,7 +104,7 @@ class ProductController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function countOffer(){
+    public function countOffer($order){
 
         /* Esta funcion devuelve la cantidad de productos 
         que son ofertas del dia
@@ -114,11 +114,12 @@ class ProductController extends Controller
 
         $p = Product::selectRaw('count(*) as cantidad')
         ->where('product_offer_day','=',true)
+        ->where('product_offer_day_order','=',$order)
         ->first();
         return $p->cantidad;
     }
 
-    public function countBest(){
+    public function countBest($order){
 
         /* Esta funcion devuelve la cantidad de productos 
         que son ofertas destacados
@@ -127,6 +128,7 @@ class ProductController extends Controller
         */
         $p = Product::selectRaw('count(*) as cantidad')
         ->where('product_best_seller','=',true)
+        ->where('product_best_seller_order','=',$order)
         ->first();
         return $p->cantidad;
     }
@@ -181,14 +183,14 @@ class ProductController extends Controller
         */
 
         if ($valueO == 1){
-            $cant_o = $this->countOffer();
+            $cant_o = $this->countOffer($orderO);
             $id_o = $this->idOffer($orderO);
             if (($cant_o > 0) && ($id_o > 0) ){
                 $p = Product::find($id_o)->update(['product_offer_day_order' => 0]);
             }
         }
         if ($valueB == 1 ){
-            $cant_b = $this->countBest();
+            $cant_b = $this->countBest($orderB);
             $id_b = $this->idBest($orderB);
             if (($cant_b > 0 ) && ( $id_b > 0)){
                 $p = Product::find($id_b)->update(['product_best_seller_order' => 0]);
@@ -339,6 +341,7 @@ class ProductController extends Controller
             'brand_id' => ['required'],
             'category_id' => ['required'],
         ]);
+        
 
         $product = Product::find($id);
         if (!$product) {
