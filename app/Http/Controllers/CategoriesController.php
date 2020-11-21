@@ -50,9 +50,13 @@ class CategoriesController extends Controller
         Parámetros: recibe el parámetro request que tendrá los datos de la nueva Categoría a registrar.
         Return: la función devuelve un mensaje indicando si se pudo guardar correctamente o no la Categoría. */ 
 
+        $message = [
+            'category_name.unique' => 'La categoría ya existe'
+            ];
+        
         $validaData = $request->validate([
-            'category_name' => ['required','string']
-        ]);
+            'category_name' => ['required','string','unique:categories,category_name']
+        ],$message);
         $category = new Category();
         $category->category_name = strtoupper($request->category_name);
     
@@ -99,9 +103,14 @@ class CategoriesController extends Controller
          */
 
         $category = Category::find($id);
+        $request->category_name = strtoupper($request->category_name);
+        $message = [
+            'category_name.unique' => 'La categoría ya existe'
+            ];
+        
         $validaData = $request->validate([
-                            'category_name' => ['required','string']
-                    ]);
+            'category_name' => ['required','string','unique:categories,category_name']
+        ],$message);
         
         
         

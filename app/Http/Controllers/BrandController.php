@@ -46,10 +46,14 @@ public function store(Request $request)
     Parámetros:recibe el parametro request donde tendran los datos de la nueva marca a registrar
     Return:la funcion devuelve si se pudo guardar correctamente o no */
 
+    $message = [
+        'brand_name.unique' => 'La marca ya existe'
+        ];
+    
     $validaData = $request->validate([
-        'brand_name' => ['required','string']
-    ]
-);
+        'brand_name' => ['required','string','unique:brands,brand_name']
+    ],$message);
+    
     $brand = new Brand();
     $brand->brand_name = strtoupper($request->brand_name);
 
@@ -115,10 +119,14 @@ public function update(Request $request, $id)
     realizar la opreacion de actualizacion */
     
     $brand = Brand::find($id);
+    $request->brand_name = strtoupper($request->brand_name);
+    $message = [
+        'brand_name.unique' => 'La marca ya existe'
+        ];
+    
     $validaData = $request->validate([
-        'brand_name' => ['required','string']
-    ]
-);
+        'brand_name' => ['required','string','unique:brands,brand_name']
+    ],$message);
 
     if (!$brand) {
         return response()->json([
