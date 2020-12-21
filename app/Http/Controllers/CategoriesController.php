@@ -192,6 +192,6 @@ class CategoriesController extends Controller
             $data['brand'] = $brand;
             array_push($products,$data);
         }
-        return response()->json($data, 200);
+        return response()->json($products, 200);
     }
 }

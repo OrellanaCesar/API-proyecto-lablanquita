@@ -28,11 +28,11 @@ Route::group(['prefix' => 'auth'], function () {
 	Route::post('login', [AuthController::class,'login']);
 	Route::post('signupCliente', [AuthController::class,'signupCliente']);
 	Route::post('recoverPass',[AuthController::class, 'recoverPass'] );
-	
+	Route::post('signupAdministrador', [AuthController::class,'signupAdministrador']);
 	Route::group(['middleware' => 'auth:api'], function() {
 		Route::get('logout',[AuthController::class,'logout']);
 		Route::get('user',[AuthController::class,'user']);
-		Route::post('signupAdministrador', [AuthController::class,'signupAdministrador']);
+		
 		Route::post('update',[AuthController::class,'update']);
 	});
 });
